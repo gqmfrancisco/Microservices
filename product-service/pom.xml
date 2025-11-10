@@ -88,6 +88,30 @@
     		<groupId>com.github.ben-manes.caffeine</groupId>
     		<artifactId>caffeine</artifactId>
 		</dependency>
+				<!--Adaptação para Prometheus. Esta dependência é o "motor" que permite ao Micrometer formatar todas as métricas coletadas (latência, uso de CPU, etc.) no formato que o Prometheus espera consumir. Ela expõe o endpoint /actuator/prometheus.-->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
+		<!--Conexão entre Micrometer e Brave. O Micrometer (a API de rastreamento do Spring) usa o Brave como implementação subjacente para criar os spans (partes da transação) e traces (o caminho completo da transação). Esta dependência é a ponte que os conecta.-->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-brave</artifactId>
+		</dependency>
+		
+		<!--Envio dos Traces para o Zipkin. Esta biblioteca é usada pelo Brave para empacotar os dados do rastreamento (os spans gerados) e enviá-los de forma eficiente para o servidor Zipkin, onde serão armazenados e visualizados.-->
+		<dependency>
+			<groupId>io.zipkin.reporter2</groupId>
+			<artifactId>zipkin-reporter-brave</artifactId>
+		</dependency>
+		
+		<!--Medição de Chamadas Externas. Essencial para o seu ecossistema! Esta dependência instrumenta automaticamente todas as chamadas síncronas feitas por clientes Feign (como a chamada do product-service para o currency-service). Isso garante que a latência e o status dessas chamadas sejam registrados como métricas e rastreados como parte de um trace distribuído.-->
+		<dependency>
+		    <groupId>io.github.openfeign</groupId>
+		    <artifactId>feign-micrometer</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>
